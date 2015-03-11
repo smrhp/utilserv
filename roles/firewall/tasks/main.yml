@@ -1,0 +1,23 @@
+---
+ 
+- name: Installation du firewall
+  file: dest={{item}} state=directory recurse=yes
+  with_items:
+    - /usr/local/bin/utilserv/firewall
+    - /usr/local/etc/utilserv/firewall
+
+#- copy: src={{ item }} dest=/etc/firewall/conf.d/ mode=0600
+#  with_fileglob:
+#  - ./conf.d/*
+
+- copy: src={{ item }} dest=/usr/local/bin/utilserv/firewall/ group=staff mode=0755
+  with_fileglob:
+  - ./bin/*
+
+- copy: src={{ item }} dest=/usr/local/etc/utilserv/firewall/ group=staff mode=0755
+  with_fileglob:
+  - ./etc/*
+
+- copy: src=./firewall dest=/etc/init.d/firewall mode=0755
+
+- service: name=firewall enabled=yes state=started

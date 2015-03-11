@@ -1,0 +1,4 @@
+---
+
+- name: testnotif
+  command: chmod ugo+w /root/testnotif.txt

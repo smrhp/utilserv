@@ -1,0 +1,46 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          custom firewall
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: firewall initscript
+# Description:       Custom Firewall
+### END INIT INFO
+
+# Lancement du script de Firewall
+ 
+# Fonction pour le lancement du firewall
+start() {
+  echo "Application des règles IpTables : "
+  /usr/local/bin/utilserv/firewall/init_iptables.sh
+}
+ 
+# Fonction pour arrêter le firewall (on flush)
+stop() {
+  echo "Flush des règles IpTables : "
+  /usr/local/bin/utilserv/firewall/flush_iptables.sh
+}
+ 
+case $1 in
+  start)
+    start
+  ;;
+  stop)
+    stop
+  ;;
+  restart)
+    stop
+    start
+  ;;
+  status)
+    /sbin/iptables -L
+    /sbin/iptables -t nat -L
+    /sbin/ip6tables -L
+  ;;
+  *)
+    echo "Usage: /etc/init.d/firewall {start|stop|restart|status}."
+esac
+ 
+exit

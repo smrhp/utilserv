@@ -1,0 +1,24 @@
+# installer NginX
+
+- name: Mise à jour des paquets
+  apt: update_cache=yes cache_valid_time=7200
+ 
+- name: Installation des paquets communs
+  apt: name={{ item }} state=present
+  with_items:
+   - nginx
+   - php5-fpm
+   - mysql-server
+
+- name : Copier un exemple de configuration php5-fpm pour limiter openbasedir 
+  copy: src=phpfpm/conf.example dest=/etc/php5/fpm/pool.d/
+
+- name : Copier commun.conf pour nginx
+  copy: src=nginx/commun.conf dest=/etc/nginx/
+
+- name: Création des dossiers utiles
+  file: dest={{item}} state=directory recurse=yes owner=www-data group=www-data
+  with_items:
+    - /home/web/
+
+- service: name=nginx state=started

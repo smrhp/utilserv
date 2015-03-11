@@ -1,0 +1,15 @@
+[services]
+listen = /var/run/fr.vetocom.services.sock
+listen.owner = www-data
+listen.group = www-data
+listen.mode = 0660
+user = www-data
+group = www-data
+pm = dynamic
+pm.max_children = 50
+pm.start_servers = 20
+pm.min_spare_servers = 5
+pm.max_spare_servers = 35
+php_admin_value[open_basedir] = /home/web/fr.vetocom/services:/home/web/phptmpupload
+php_admin_value[upload_tmp_dir] = /home/web/phptmpupload
+
