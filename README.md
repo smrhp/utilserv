@@ -4,3 +4,4 @@ Playbook ansible avec quelques configurations de "base" :
   - installation d'un script permettant de gérer un firewall (gestion d'iptables),
   - rôle webserver pour installer nginx, php5-fpm, mysql-server,
   - rôle monitoring (en cours)
+  - rôle serveur de fichiers (proftpd lié à mysql)
