@@ -3,7 +3,12 @@
 - name: Installation des paquets serveur ftp
   apt: name={{ item }} state=present
   with_items:
-   - proftpd
+   - proftpd-basic
+   - proftpd-mod-mysql
+
+# ******** penser à lineinfile pour configurer simplement quelques lignes dans le fichier de conf.
+- name: Modification du fichier proftpd.conf
+  lineinfile: dest=/etc/proftpd/proftpd.conf backup=yes line="DefaultRoot ~"
 
 #- name : Copier un exemple de configuration php5-fpm pour limiter openbasedir 
 #  copy: src=phpfpm/conf.example dest=/etc/php5/fpm/pool.d/

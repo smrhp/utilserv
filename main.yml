@@ -8,3 +8,4 @@
 - hosts: webservers
   roles:
   - webserver
+  - ftpserver
