@@ -6,7 +6,7 @@ for fichier in /usr/local/etc/utilserv/firewall/*.conf ; do
 done
 
 #Types ICMP V6 à autoriser, cf. https://tools.ietf.org/html/rfc4890#section-4.4 & https://en.wikipedia.org/wiki/ICMPv6#Types_of_ICMPv6_messages
-icmpV6_type="1 2 3 4 133 134 135 136 137 141 142 148 149" # Types ICMPv6 séparés par un espace -- Ajouter 137???
+icmpV6_type="1 2 3 4 133 134 135 136 137 141 142 148 149" # Types ICMPv6 séparés par un espace
 icmp_V6_local="130 131 132 143 151 152 153"
 
 # Interdit toute connexion entrante 
@@ -31,7 +31,7 @@ ip6tables -A INPUT -i lo -j ACCEPT
 iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 ip6tables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
-# Drop non-conforming packets, such as malformed headers, etc.
+# Interdire les paquets non conformes
 iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 ip6tables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
@@ -59,12 +59,12 @@ ip6tables -A ICMPFLOOD -j ACCEPT
 
 # Ouverture des ports personnalisés
 for i in $ports_tcp; do
-  iptables -A INPUT -p tcp --dport $i -j ACCEPT
-  ip6tables -A INPUT -p tcp --dport $i -j ACCEPT
+  iptables -A INPUT -p tcp --dport "$i" -j ACCEPT
+  ip6tables -A INPUT -p tcp --dport "$i" -j ACCEPT
 done
 for i in $ports_udp; do
-  iptables -A INPUT -p udp --dport $i -j ACCEPT
-  ip6tables -A INPUT -p udp --dport $i -j ACCEPT
+  iptables -A INPUT -p udp --dport "$i" -j ACCEPT
+  ip6tables -A INPUT -p udp --dport "$i" -j ACCEPT
 done
 
 # Autoriser des paquets ICMP importants
@@ -73,12 +73,12 @@ iptables -A INPUT -p icmp --icmp-type 0 -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type 3 -j ACCEPT 
 iptables -A INPUT -p icmp --icmp-type 11 -j ACCEPT
 
-# Permit needed ICMP packet types for IPv6 per RFC 4890.
+# Autoriser les types ICMP IPv6 d'après RFC 4890.
 for i in $icmpV6_type; do
-   ip6tables -A INPUT -p ipv6-icmp --icmpv6-type $i   -j ACCEPT
+   ip6tables -A INPUT -p ipv6-icmp --icmpv6-type "$i"   -j ACCEPT
 done
 for i in $icmp_V6_local; do
-  ip6tables -A INPUT -s fe80::/10 -p ipv6-icmp --icmpv6-type $i -j ACCEPT
+  ip6tables -A INPUT -s fe80::/10 -p ipv6-icmp --icmpv6-type "$i" -j ACCEPT
 done
 
 # Autoriser le ping avec la règle prédéfinie
@@ -90,6 +90,7 @@ iptables -A INPUT -p udp --sport 53 -j DROP
 ip6tables -A INPUT -p udp --sport 53 -j DROP
 
 # Good practise is to explicately reject AUTH traffic so that it fails fast.
+# Il est conseillé de rejeter explicitement le traffic AUTH pour qu'il soit rapidement en erreur
 iptables -A INPUT -p tcp --dport 113 --syn -m conntrack --ctstate NEW -j REJECT --reject-with tcp-reset
 ip6tables -A INPUT -p tcp --dport 113 --syn -m conntrack --ctstate NEW -j REJECT --reject-with tcp-reset
 
@@ -97,8 +98,7 @@ ip6tables -A INPUT -p tcp --dport 113 --syn -m conntrack --ctstate NEW -j REJECT
 iptables -A INPUT -m limit --limit 1/second --limit-burst 100 -j LOG --log-prefix "iptables[DOS]: "
 ip6tables -A INPUT -m limit --limit 1/second --limit-burst 100 -j LOG --log-prefix "iptables[DOS]: "
 
-# Filtrer scanner DFind
-iptables -I INPUT -d $(hostname -i) -p tcp --dport 80 -m string --to 70 --algo bm --string 'GET /w00tw00t.at.ISC.SANS.' -j DROP
-
+for regle in /usr/local/etc/utilserv/firewall/conf.d/*.conf; do
+  . "$regle"
+done
 echo "L'activation des règles de pare-feu a été effectuée [OK]"
-
