@@ -5,7 +5,7 @@
   with_items:
     - /usr/local/bin/utilserv/firewall
     - /usr/local/etc/utilserv/firewall
-    - /usr/local/utilserv/etc/firewall/conf.d
+    - /usr/local/etc/utilserv/firewall/conf.d
 
 - copy: src={{ item }} dest=/usr/local/bin/utilserv/firewall/ group=staff mode=0755
   with_fileglob:
