@@ -13,6 +13,8 @@
    - ntp
    - bind9
    - molly-guard
+   - aptitude
+   - locate
 
 - name : Copier .bashrc pour root 
   copy: src=.bashrc dest=/root/.bashrc
