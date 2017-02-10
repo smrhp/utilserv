@@ -1,5 +1,6 @@
 #!/bin/sh
-for fichier in /usr/local/etc/utilserv/firewall/*.conf ; do
+for fichier in /usr/local/etc/utilserv/firewall/conf.d/*.conf ; do
+  echo "$fichier"
   . "$fichier"
   ports_tcp="$ports_tcp $p_tcp"
   ports_udp="$ports_udp $p_udp"

@@ -15,6 +15,7 @@
    - molly-guard
    - aptitude
    - locate
+   - build-essential
 
 - name : Copier .bashrc pour root 
   copy: src=.bashrc dest=/root/.bashrc
