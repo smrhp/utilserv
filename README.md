@@ -5,3 +5,5 @@ Playbook ansible avec quelques configurations de "base" :
   - rôle webserver pour installer nginx, php5-fpm, mysql-server,
   - rôle monitoring (en cours)
   - rôle serveur de fichiers (proftpd lié à mysql)
+
+# test commit
